@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自动生成V字提高版本（定位）</title>
+</head>
+<style>
+    div{
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: red;
+        color: #fff;
+        text-align: center;
+        line-height: 100px;
+    }
+</style>
+<script>
+    function getsStyle(obj,sty){
+        if(obj.currentStyle){
+            return obj.currentStyle[sty];
+            //IE下兼容
+        }else{
+            return getComputedStyle(obj,null)[sty];
+            //非IE下兼容
+        }
+    }
+    function changeV(obj,dir,length,step1,step2){
+        var temp1 = 0;
+        var temp2 = 0;
+        var s1 = 0;
+        var s2 = 0;
+        switch(dir){
+            case 'up':
+                temp1 = obj.style.top;
+                temp2 = obj.style.left;
+                s1= step1;
+                s2 = step2;
+                break;
+            case 'down':
+                temp1 = obj.style.top;
+                temp2 = obj.style.left;
+                s1= step2;
+                s2 = step1;
+                break;
+            case 'left':
+                temp1 = obj.style.left;
+                temp2 = obj.style.top;
+                s1= step2;
+                s2 = step1;
+                break;
+            case 'right':
+                temp1 = obj.style.left;
+                temp2 = obj.style.top;
+                s1= step1;
+                s2 = step2;
+                break;
+            default:
+                break;
+        }
+        if(step2 > length/2){
+            temp1 = 50+parseInt(getsStyle(obj,'height')) * s1+'px';
+        }
+        else{
+            temp1 = 50+parseInt(getsStyle(obj,'height')) * s2+'px';
+        }
+        temp2 = 50+parseInt(getsStyle(obj,'width')) * s2+'px';
+        if(dir == 'up'||dir =='down'){
+            obj.style.top = temp1;
+            obj.style.left = temp2;
+        }else{
+            obj.style.top = temp2;
+            obj.style.left = temp1;
+        }
+    }
+    window.onload = function () {
+        var aDiv = document.getElementsByTagName('div');
+        var html = '';
+        var t = 0;
+        var onOff = false;
+        document.body.onclick = function (ev) {
+            var ev = ev || window.event;
+            var target = ev.target || ev.srcElement;
+            if(target.nodeName.toLowerCase() != 'input'){
+                return;
+            }
+            if(onOff == false){
+                for (var i = 0; i < 5; i++) {
+                    html += '<div>' + i + '</div>';
+                }
+                document.body.innerHTML += html;
+                onOff = true;
+            }
+            var arr = ['up', 'down', 'left', 'right'];
+            t = t % arr.length;
+            for (var i = 0; i < aDiv.length; i++) {
+                changeV(aDiv[i], arr[t], aDiv.length, aDiv.length - i - 1, i);
+            }
+            t++;
+        }
+    };
+</script>
+<body>
+<input id="btn" type="button" value="自动生成V提高版本">
+</body>
+</html>
